@@ -1,0 +1,1 @@
+# 2026-Embodied_AI_Applications_Competition--Power_Industry
