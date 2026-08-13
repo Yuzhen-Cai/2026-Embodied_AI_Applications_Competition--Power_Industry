@@ -10,12 +10,10 @@
 ## 2. 上半身操作控制算法（VLA）
 * **基座模型复现与性能评估**
   * **pi0.5** ：
-    https://github.com/Physical-Intelligence/openpi
-    权重：gs://openpi-assets/checkpoints/
+
 
   * **GR00T N1.7** ：
-    https://github.com/Nvidia/Isaac-GR00T
-    权重：https://huggingface.co/collections/nvidia/gr00t-n17
+
 
 * **强化学习微调策略（Post-Training）**
   * 引入 RL 算法（PPO / GRPO / SAC），针对具身操作的成功率、动作平滑度及抗干扰能力进行仿真强化训练

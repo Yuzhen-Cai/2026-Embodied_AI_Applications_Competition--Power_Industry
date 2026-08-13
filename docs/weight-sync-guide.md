@@ -6,11 +6,11 @@
 
 ## 1. 方案一句话
 
-自训练权重统一存到**阿里云 OSS**（S3 兼容对象存储），通过 `scripts/sync_weights.py` 一键上传/下载，git 仓库里只保留脚本与配置，不存权重本体。
+自训练权重统一存到**阿里云 OSS**（S3 兼容对象存储），通过 `scripts/sync_weights.py` 一键上传/下载
 
 ---
 
-## 2. 队友上手三步
+
 
 ### 第一步：装依赖（一次性）
 
@@ -25,11 +25,11 @@ pip install boto3 python-dotenv
 cp .env.example .env
 ```
 
-编辑 `.env`，填入真实值（由组长统一发放）：
+编辑 `.env`，填入真实值：
 
 ```
-OSS_ACCESS_KEY_ID=你的AccessKeyId
-OSS_ACCESS_KEY_SECRET=你的AccessKeySecret
+OSS_ACCESS_KEY_ID=AccessKeyId
+OSS_ACCESS_KEY_SECRET=AccessKeySecret
 OSS_BUCKET=团队的bucket名
 OSS_ENDPOINT=oss-cn-hangzhou.aliyuncs.com
 OSS_REGION=cn-hangzhou
@@ -40,10 +40,10 @@ OSS_REGION=cn-hangzhou
 ### 第三步：用命令
 
 ```bash
-# 上传某个版本的权重（在训练机器上执行）
+# 上传某个版本的权重
 python scripts/sync_weights.py push gait ppo_v1_2026-08-13
 
-# 下载某个版本的权重（在队友机器上执行）
+# 下载某个版本的权重
 python scripts/sync_weights.py pull gait ppo_v1_2026-08-13
 
 # 查看云端某个任务下的所有版本
@@ -89,19 +89,11 @@ python scripts/sync_weights.py list
 
 ---
 
-## 5. 权限管理（组长操作）
+## 5. 权限管理
 
-不要直接给队友主账号密钥，建议：
+非直接使用主账号密钥，建议：
 
 1. 在阿里云 RAM 控制台创建**子账号**，授予 `AliyunOSSFullAccess`（或仅限某个 bucket 的读写策略）；
 2. 给每位队友发放独立的 AccessKey；
 3. 需要时可随时在 RAM 里吊销某个子账号，不影响其他人。
 
----
-
-## 6. 常见问题
-
-- **`list` 为空 / `pull` 报「没有找到该版本」**：确认版本名与 `list` 输出完全一致（区分大小写、日期格式）。
-- **上传大文件慢/中断**：boto3 默认走 HTTPS；若需要断点续传可改用 `rclone` 的 S3 后端（endpoint 指向 OSS），本项目脚本先保证简单可用。
-- **endpoint 填什么**：以 OSS 控制台 bucket 所在区域为准，如 `oss-cn-beijing.aliyuncs.com`。
-- **跨地域访问**：endpoint 与 bucket 所在地域不一致会报错，请保持一致。
