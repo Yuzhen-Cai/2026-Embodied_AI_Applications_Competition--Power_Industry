@@ -32,7 +32,7 @@ OSS_ACCESS_KEY_ID=AccessKeyId
 OSS_ACCESS_KEY_SECRET=AccessKeySecret
 OSS_BUCKET=团队的bucket名
 OSS_ENDPOINT=oss-cn-hangzhou.aliyuncs.com
-OSS_REGION=cn-hangzhou
+OSS_REGION=cn-guangzhou
 ```
 
 > `.env` 已被 `.gitignore` 忽略，不会提交到 git，请勿把真实密钥写进 `.env.example`。
