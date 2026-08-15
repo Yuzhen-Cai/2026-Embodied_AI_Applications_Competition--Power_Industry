@@ -1,4 +1,4 @@
-# H2 pi0.5 训练与离线动作验证指南
+﻿# H2 pi0.5 训练与离线动作验证指南
 
 本文档说明如何在本仓库中，基于 `pi05_base` 微调 Unitree H2 单手操作数据，并使用记录数据离线检查模型预测动作。所有命令均在仓库根目录执行。
 
@@ -132,7 +132,7 @@ PY
 ### 新 8_10_mixu 单手数据：计算统计后立即训练
 
 以下是一条完整指令：仅当归一化统计成功写入后，`&&` 才会开始训练。实验输出目录为
-`checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/`。
+`../../weights/openpi/checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/`。
 
 ```bash
 HF_HUB_OFFLINE=1 uv run python scripts/compute_norm_stats.py \
@@ -168,13 +168,13 @@ HF_HUB_OFFLINE=1 uv run python scripts/train.py \
 默认输出目录为：
 
 ```text
-checkpoints/pi05_h2_one_hand/smoke_test/
+../../weights/openpi/checkpoints/pi05_h2_one_hand/smoke_test/
 ```
 
 最终 20,000 steps 正常情况下会保存为 `19999`，因为训练 step 从 0 开始编号：
 
 ```text
-checkpoints/pi05_h2_one_hand/smoke_test/19999/
+../../weights/openpi/checkpoints/pi05_h2_one_hand/smoke_test/19999/
 ```
 
 成功结束时应看到：
@@ -189,7 +189,7 @@ Done waiting for Save Finalize thread
 检查最终 checkpoint 内容：
 
 ```bash
-find checkpoints/pi05_h2_one_hand/smoke_test/19999 -maxdepth 1 -type d | sort
+find ../../weights/openpi/checkpoints/pi05_h2_one_hand/smoke_test/19999 -maxdepth 1 -type d | sort
 ```
 
 应至少包含 `assets`、`params` 和 `train_state`。
@@ -224,7 +224,7 @@ HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions.py
 ```
 
 通过 `--config-name` 选择要验证的 H2 任务。脚本默认读取
-`checkpoints/<config-name>/smoke_test/19999`，并写入
+`../../weights/openpi/checkpoints/<config-name>/smoke_test/19999`，并写入
 `visualization_output/<config-name>_offline_predictions/`；可用
 `--checkpoint-dir` 和 `--output-dir` 覆盖这两个路径。
 
@@ -250,7 +250,7 @@ visualization_output/pi05_h2_one_hand_offline_predictions/
 ```bash
 HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions_14dof.py \
   --config-name h2_dianzha_down_no_hand \
-  --checkpoint-dir checkpoints/h2_dianzha_down_no_hand/pi05_h2_dianzha_down_no_hand/19999 \
+  --checkpoint-dir ../../weights/openpi/checkpoints/h2_dianzha_down_no_hand/pi05_h2_dianzha_down_no_hand/19999 \
   --sample-indices 200 2500 7500 12000 17000 \
   --output-dir visualization_output/h2_dianzha_down_no_hand
 ```
@@ -259,7 +259,7 @@ HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions_14dof.py \
 ```bash
 HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions.py \
   --config-name pi05_h2_one_hand_mixu \
-  --checkpoint-dir checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999 \
+  --checkpoint-dir ../../weights/openpi/checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999 \
   --sample-indices 200 2500 7500 12000 17000 \
   --output-dir visualization_output/pi05_h2_one_hand_mixu
 ```
@@ -271,7 +271,7 @@ episode 首尾，并在 `summary.json` 和 `per_sample_metrics.csv` 中记录 ep
 ```bash
 HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions.py \
   --config-name pi05_h2_one_hand_mixu \
-  --checkpoint-dir checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999 \
+  --checkpoint-dir ../../weights/openpi/checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999 \
   --num-episodes 20 \
   --output-dir visualization_output/pi05_h2_one_hand_mixu_20_episodes
 ```
@@ -290,7 +290,7 @@ HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions.py \
 ```bash
 HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions.py \
   --config-name pi05_h2_one_hand_mixu \
-  --checkpoint-dir checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999 \
+  --checkpoint-dir ../../weights/openpi/checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999 \
   --all-samples \
   --top-k 20 \
   --output-dir visualization_output/pi05_h2_one_hand_mixu_all_samples
@@ -301,7 +301,7 @@ HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions.py \
 ```bash
 HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions.py \
   --config-name pi05_h2_two_hand \
-  --checkpoint-dir checkpoints/pi05_h2_two_hand/two_hand_v1/19999 \
+  --checkpoint-dir ../../weights/openpi/checkpoints/pi05_h2_two_hand/two_hand_v1/19999 \
   --sample-indices 200 2500 7500 12000 17000 \
   --output-dir visualization_output/h2_checkpoint_19999
 ```
@@ -314,7 +314,7 @@ HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions.py \
 HF_HUB_OFFLINE=1 uv run python scripts/infer_h2_dataset.py
 ```
 
-脚本默认读取单手最终 checkpoint `checkpoints/pi05_h2_one_hand/smoke_test/19999`，并推理样本
+脚本默认读取单手最终 checkpoint `../../weights/openpi/checkpoints/pi05_h2_one_hand/smoke_test/19999`，并推理样本
 `0 1000 5000 10000 15000`。终端会打印每个样本的任务文本、三路图像 shape、29 维 state、原始
 `(50, 32)` 模型输出、前 29 维 H2 预测动作、记录标签、逐元素绝对误差和汇总指标。原始输出最后
 3 维是 padding，不是 H2 关节。
@@ -335,7 +335,7 @@ HF_HUB_OFFLINE=1 uv run python scripts/serve_policy.py \
   --port 9000 \
   policy:checkpoint \
   --policy.config=pi05_h2_one_hand \
-  --policy.dir=checkpoints/pi05_h2_one_hand/smoke_test/19999
+  --policy.dir=../../weights/openpi/checkpoints/pi05_h2_one_hand/smoke_test/19999
 ```
 
 在另一个终端使用记录训练数据测试客户端。客户端会发送三路图像、29 维 state 和任务文本，打印服务端
@@ -414,7 +414,7 @@ HF_HUB_OFFLINE=1 uv run python scripts/client_h2_dataset.py \
 ```bash
 for step in 5000 10000 15000 19999; do
   HF_HUB_OFFLINE=1 uv run python scripts/check_h2_offline_predictions.py \
-    --checkpoint-dir "checkpoints/pi05_h2_one_hand/smoke_test/${step}" \
+    --checkpoint-dir "../../weights/openpi/checkpoints/pi05_h2_one_hand/smoke_test/${step}" \
     --sample-indices 0 1000 5000 10000 15000 \
     --output-dir "visualization_output/h2_checkpoint_${step}"
 done

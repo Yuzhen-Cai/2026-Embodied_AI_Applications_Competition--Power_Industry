@@ -6,7 +6,7 @@ server:
 model:
   adapter: "openpi_rtc_triton"
   config_name: "cloth_task_config"
-  checkpoint: "/path/to/checkpoints/cloth_task_model.pkl"
+  checkpoint: "../../weights/realtime_vla/cloth_task_model.pkl" # 统一权重目录（cloth 任务微调权重，待训练产出后放置于此）
   prompt: "fold the cloth"
   adarms_knob: 0
   valid_action_num: 50

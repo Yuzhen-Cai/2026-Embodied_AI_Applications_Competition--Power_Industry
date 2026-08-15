@@ -13,8 +13,8 @@ config = _config.get_config("pi05_droid")
 
 # ========== 修改：使用本地路径 ==========
 # 原始路径：checkpoint_dir = Path("./checkpoints/pi0_fast_droid")
-# 修改为本地已下载的checkpoint路径
-checkpoint_dir = Path("./checkpoints/pi05_base") # pi05_base pi05_droid
+# 权重已统一迁移至项目根目录 weights/openpi/checkpoints/
+checkpoint_dir = Path("../../weights/openpi/checkpoints/pi05_base") # pi05_base pi05_droid
 
 # 验证checkpoint路径是否存在，不存在则报错
 assert checkpoint_dir.exists(), f"Checkpoint not found: {checkpoint_dir}"

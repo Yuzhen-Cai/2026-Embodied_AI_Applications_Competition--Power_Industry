@@ -7,7 +7,7 @@ server:
 model:
   adapter: "openpi_rtc_triton"
   config_name: "pi05_droid"
-  checkpoint: "/home/liguopu/lgp_dev/project/realtime-vla/pi05_droid_finetune_low_mem_converted.pkl"
+  checkpoint: "../../weights/realtime_vla/pi05_base_converted.pkl" # 统一权重目录；原为上游机器的 pi05_droid_finetune 微调权重，本地目前仅有 base 转换权重
   prompt: "Pick up the bottle."
   adarms_knob: 0
   valid_action_num: 15 # 15

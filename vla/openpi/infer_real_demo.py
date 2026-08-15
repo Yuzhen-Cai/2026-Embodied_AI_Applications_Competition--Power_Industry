@@ -15,7 +15,8 @@ from openpi.training import config as _config
 
 # ========== 配置 ==========
 config = _config.get_config("pi05_droid")
-checkpoint_dir = Path("./checkpoints/pi05_droid")
+# 权重已统一迁移至项目根目录 weights/openpi/checkpoints/
+checkpoint_dir = Path("../../weights/openpi/checkpoints/pi05_droid")
 
 assert checkpoint_dir.exists(), f"Checkpoint not found: {checkpoint_dir}"
 print(f"Loading checkpoint from: {checkpoint_dir.absolute()}")

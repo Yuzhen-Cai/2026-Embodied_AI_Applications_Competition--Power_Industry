@@ -6,7 +6,7 @@ server:
 model:
   adapter: "openpi_rtc_triton"
   config_name: "box_task_config"
-  checkpoint: "/home/liguopu/lgp_dev/project/realtime-vla/pi05_droid_finetune_low_mem_converted.pkl"
+  checkpoint: "../../weights/realtime_vla/pi05_base_converted.pkl" # 统一权重目录；原为上游机器的 pi05_droid_finetune 微调权重，本地目前仅有 base 转换权重
   prompt: "Place the five small white boxes into the five container slots inside the large black box."
   adarms_knob: 0
   valid_action_num: 50

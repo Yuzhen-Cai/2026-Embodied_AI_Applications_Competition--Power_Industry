@@ -6,7 +6,7 @@ server:
 model:
   adapter: "openpi_rtc_triton"
   config_name: "chip_task_config"
-  checkpoint: "/path/to/checkpoints/chip_task_model.pkl"
+  checkpoint: "../../weights/realtime_vla/chip_task_model.pkl" # 统一权重目录（chip 任务微调权重，待训练产出后放置于此）
   prompt: "stack all bowls in order"
   adarms_knob: 0
   valid_action_num: 50

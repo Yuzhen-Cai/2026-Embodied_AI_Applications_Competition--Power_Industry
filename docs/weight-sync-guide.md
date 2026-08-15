@@ -1,77 +1,51 @@
-# 自训练权重同步使用说明（阿里云 OSS）
+# 权重同步使用说明（本地服务器 + SFTP）
 
-本文档说明**团队之间如何分发/拉取「自训练权重」**。公开预训练权重（pi0.5 / GR00T）不走本流程，请用 `scripts/download_weights.py`（经 hf-mirror / ModelScope 下载）。
+所有大权重文件统一托管在**团队本地服务器**上，远程机器通过 **SFTP** 连接下载/上传，不使用任何云存储。
 
 ---
 
 ## 1. 方案一句话
 
-自训练权重统一存到**阿里云 OSS**（S3 兼容对象存储），通过 `scripts/sync_weights.py` 一键上传/下载
+权重统一存放在本地服务器的固定目录，客户端用 `scp` / `sftp` 拉取，本地与服务器目录结构一一对应。
 
----
+## 2. 目录约定
 
-
-
-### 第一步：装依赖（一次性）
-
-```bash
-pip install boto3 python-dotenv
-```
-
-### 第二步：配置凭据（一次性）
-
-```bash
-# 在项目根目录执行
-cp .env.example .env
-```
-
-编辑 `.env`，填入真实值：
-
-```
-OSS_ACCESS_KEY_ID=AccessKeyId
-OSS_ACCESS_KEY_SECRET=AccessKeySecret
-OSS_BUCKET=团队的bucket名
-OSS_ENDPOINT=oss-cn-hangzhou.aliyuncs.com
-OSS_REGION=cn-guangzhou
-```
-
-> `.env` 已被 `.gitignore` 忽略，不会提交到 git，请勿把真实密钥写进 `.env.example`。
-
-### 第三步：用命令
-
-```bash
-# 上传某个版本的权重
-python scripts/sync_weights.py push gait ppo_v1_2026-08-13
-
-# 下载某个版本的权重
-python scripts/sync_weights.py pull gait ppo_v1_2026-08-13
-
-# 查看云端某个任务下的所有版本
-python scripts/sync_weights.py list gait
-
-# 查看云端所有任务
-python scripts/sync_weights.py list
-```
-
----
-
-## 3. 目录约定
-
-| 位置 | 路径 |
-|------|------|
-| 本地训练产物 | `outputs/<task>/<version>/` |
-| 云端对象前缀 | `weights/<task>/<version>/` |
+| 权重类别 | 本地位置 | 服务器位置 |
+|---|---|---|
+| 预训练 / 基座 / 转换权重 | `weights/<模块>/` | `<服务器weights根>/<模块>/` |
+| 自训练权重（RL 微调产出等） | `outputs/<task>/<version>/` | `<服务器weights根>/outputs/<task>/<version>/` |
 
 - `task`：任务名，例如 `gait`（步态）、`vla`（上半身）；
-- `version`：版本名，建议 `算法_版本_日期`，例如 `ppo_v1_2026-08-13`。
+- `version`：版本名，建议 `算法_版本_日期`，例如 `ppo_v1_2026-08-13`；
+- 本地与服务器路径一一对应，同步时按目录整拷。
 
-本地与云端路径一一对应，`push`/`pull` 自动映射，无需手动指定远端路径。
+## 3. 常用命令
 
----
+服务器地址与账号向管理员获取（请勿把凭据提交到仓库）。
+
+```bash
+# 下载全部基座权重（项目根目录执行）
+scp -r <用户名>@<服务器地址>:/<服务器weights根>/ ./weights/
+
+# 下载某个自训练权重版本
+scp -r <用户名>@<服务器地址>:/<服务器weights根>/outputs/gait/ppo_v1_2026-08-13 ./outputs/gait/
+
+# 上传某个自训练权重版本到服务器
+scp -r ./outputs/gait/ppo_v1_2026-08-13 <用户名>@<服务器地址>:/<服务器weights根>/outputs/gait/
+
+# sftp 交互式（断点续传、按需挑选子目录时更方便）
+sftp <用户名>@<服务器地址>
+sftp> lcd ./weights
+sftp> cd <服务器weights根>
+sftp> get -r openpi
+sftp> put -r outputs/gait/ppo_v1_2026-08-13   # 上传需先 cd 到 outputs/gait/
+```
+
+> 大文件建议在稳定内网中传输；下载完成后用 `du -sh` 核对目录大小（当前基座权重合计约 177GB）。
 
 ## 4. 每个版本必须附带元信息卡片
 
-每个版本目录下放一个 `README.md`，队友拉下来就能知道它是什么、怎么用：
+每个自训练版本目录下放一个 `README.md`，队友拉下来就能知道它是什么、怎么用：
 
 ```markdown
 # ppo_v1_2026-08-13
@@ -85,15 +59,11 @@ python scripts/sync_weights.py list
 - **备注**：抗扰动测试通过，可用于联调
 ```
 
-`push` 时若缺少 `README.md`，脚本会给出提示。
+上传前若缺少 `README.md`，请先补齐，避免服务器上出现无主权重。
 
----
+## 5. 账号与权限管理
 
-## 5. 权限管理
-
-非直接使用主账号密钥，建议：
-
-1. 在阿里云 RAM 控制台创建**子账号**，授予 `AliyunOSSFullAccess`（或仅限某个 bucket 的读写策略）；
-2. 给每位队友发放独立的 AccessKey；
-3. 需要时可随时在 RAM 里吊销某个子账号，不影响其他人。
-
+1. 为每位成员分配独立的 SFTP 账号，不使用共享 root；
+2. SFTP 账号仅授予权重目录的读写权限（可用 chroot 限制在家目录）；
+3. 成员离队时及时禁用/删除对应账号；
+4. 服务器地址、账号等敏感信息只通过内部渠道告知，不写入仓库文件。

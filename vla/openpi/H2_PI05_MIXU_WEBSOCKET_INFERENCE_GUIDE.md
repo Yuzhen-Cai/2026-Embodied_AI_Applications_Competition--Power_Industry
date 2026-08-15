@@ -1,4 +1,4 @@
-# H2 pi0.5 MixU WebSocket 服务端与客户端推理指南
+﻿# H2 pi0.5 MixU WebSocket 服务端与客户端推理指南
 
 本文档说明如何将已训练完成的 H2 单手模型作为 WebSocket 服务运行，并通过本地训练数据客户端验证服务端推理。所有命令均在仓库根目录执行。
 
@@ -9,7 +9,7 @@
 | 项目 | 值 |
 | --- | --- |
 | 训练配置 | `pi05_h2_one_hand_mixu` |
-| checkpoint | `checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999` |
+| checkpoint | `../../weights/openpi/checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999` |
 | 本地数据集 | `data_train/lerobot_h2_one_hand_15hz_8_10_mixu` |
 | 默认端口 | `9000` |
 | 输入 state | 29 维 `float32` 绝对关节角，单位 rad |
@@ -18,7 +18,7 @@
 开始前确认 checkpoint 目录内至少存在 `assets`、`params` 与 `train_state`：
 
 ```bash
-find checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999 \
+find ../../weights/openpi/checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999 \
   -maxdepth 1 -type d | sort
 ```
 
@@ -37,7 +37,7 @@ HF_HUB_OFFLINE=1 uv run python scripts/serve_policy.py \
   --port 9000 \
   policy:checkpoint \
   --policy.config=h2_dianzha_down_no_hand \
-  --policy.dir=checkpoints/h2_dianzha_down_no_hand/pi05_h2_dianzha_down_no_hand/19999
+  --policy.dir=../../weights/openpi/checkpoints/h2_dianzha_down_no_hand/pi05_h2_dianzha_down_no_hand/19999
 ```
 
 
@@ -47,7 +47,7 @@ HF_HUB_OFFLINE=1 uv run python scripts/serve_policy.py \
   --port 9000 \
   policy:checkpoint \
   --policy.config=pi05_h2_one_hand_mixu \
-  --policy.dir=checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999
+  --policy.dir=../../weights/openpi/checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999
 ```
 
 
@@ -66,7 +66,7 @@ HF_HUB_OFFLINE=1 uv run python scripts/serve_policy.py \
   --record \
   policy:checkpoint \
   --policy.config=pi05_h2_one_hand_mixu \
-  --policy.dir=checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999
+  --policy.dir=../../weights/openpi/checkpoints/pi05_h2_one_hand_mixu/pi05_h2_one_hand/19999
 ```
 
 这会在仓库根目录写入策略记录，仅用于调试；正常运行不需要此选项。
