@@ -1,0 +1,36 @@
+server:
+  host: "0.0.0.0"
+  port: 8321
+  endpoint: "/infer"
+
+model:
+  adapter: "openpi_rtc_triton"
+  config_name: "box_task_config"
+  checkpoint: "/home/liguopu/lgp_dev/project/realtime-vla/pi05_droid_finetune_low_mem_converted.pkl"
+  prompt: "Place the five small white boxes into the five container slots inside the large black box."
+  adarms_knob: 0
+  valid_action_num: 50
+  action_horizon: 50
+  action_type: "joint"
+  image_size: [640, 480]
+  tokenizer_path: "/home/liguopu/lgp_dev/project/realtime-vla/paligemma-3b-pt-224"
+  # norm_stats_dir: "/path/to/norm_stats/box_task"
+  norm_stats_dir: "/home/liguopu/lgp_dev/project/openpi/checkpoints/pi05_droid_finetune_low_mem/my_experiment/1999/assets/droid"
+  discrete_state_input: true
+  state_dim: 14
+  action_dim: 14
+  noise_seed: null
+
+inference:
+  optimizer: "timeaxis_smooth"
+  timeaxis_dt_ref_s: 0.01
+  timeaxis_dt_min_s: 0.008
+  timeaxis_dt_max_s: 0.016
+  timeaxis_lambda_acc: 10.0
+  timeaxis_lambda_time: 1.0
+  timeaxis_stride: 50
+  timeaxis_optdims: [0, 1, 2, 3, 4, 5, 6]
+  timeaxis_v_max: null
+  timeaxis_lambda_v: 10.0
+  timeaxis_horizon: 50
+  timeaxis_logging: false

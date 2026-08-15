@@ -1,0 +1,35 @@
+server:
+  host: "0.0.0.0"
+  port: 8000
+  endpoint: "/infer"
+
+model:
+  adapter: "openpi_rtc_triton"
+  config_name: "cloth_task_config"
+  checkpoint: "/path/to/checkpoints/cloth_task_model.pkl"
+  prompt: "fold the cloth"
+  adarms_knob: 0
+  valid_action_num: 50
+  action_horizon: 50
+  action_type: "joint"
+  image_size: [640, 480]
+  tokenizer_path: "/path/to/tokenizers/paligemma-3b-pt-224"
+  norm_stats_dir: "/path/to/norm_stats/cloth_task"
+  discrete_state_input: true
+  state_dim: 14
+  action_dim: 14
+  noise_seed: null
+
+inference:
+  optimizer: "timeaxis_smooth"
+  timeaxis_dt_ref_s: 0.016
+  timeaxis_dt_min_s: 0.008
+  timeaxis_dt_max_s: 0.025
+  timeaxis_lambda_acc: 10.0
+  timeaxis_lambda_time: 1.0
+  timeaxis_stride: 50
+  timeaxis_optdims: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+  timeaxis_v_max: null
+  timeaxis_lambda_v: 10.0
+  timeaxis_horizon: 50
+  timeaxis_logging: false
